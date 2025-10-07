@@ -19,7 +19,31 @@ The cleaning process ensures that the data is structured, consistent, and compla
     * Ensures postal codes follow proper formats 
 * Export: Saves cleaned files as XML (_CLEAN.xml) while preserving initial hierarchical structure
 
-## Usage 
+## Naming Conventions and Component Definitions 
+
+To ensure that files can be properly ingested into the pipeline and understood by both humans and machines, this project adopts a standard naming convention: 
+
+```
+{DATE}_{BOARDACRONYM}_{BOARDNUMBER}_{SCHOOLTYPE}_{DATASET}_{STAGE}.{EXT}
+```
+
+```
+20251007_UCDSB_67130_elementary_enrollment_clean.xml
+```
+
+### Component Definitions 
+
+| Field           | Description                                        | Example                                          | Notes                                                                      |
+| --------------- | -------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------- |
+| **DATE**        | File creation or processing date (ISO8601, `YYYYMMDD`) | `20251007`                                       | Use the STIX `<CreateDate>` metadata when available; otherwise system date |
+| **BOARDNUMBER** | Unique board identifier                            | `67130`                                          | Always numeric; zero-pad if needed; Use the STIX metadata when available 
+| **BOARDACRONYM** | Unique acronym for board  | `UGDSB`, `WCDSB`
+| **SCHOOLTYPE**  | Level of school                                    | `elementary`, `secondary`                        | Always lowercase                                                           |
+| **DATASET**     | File purpose or type                               | `enrollment` | Short, clear, no spaces                                                    |
+| **STAGE**       | Step in the workflow                               | `raw`, `clean`, `validated`   | Indicates progress through data pipeline                                   |
+| **EXT**         | File extension                                     | `xml`, `csv`, `yaml`, `json`                     | Match actual format                                                        |
+
+## Usage
 
 1. Place all STIX xml enrollment files in a folder e.g. STIXfix
 2. Activate your python venv
