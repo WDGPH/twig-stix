@@ -1,4 +1,3 @@
-import xml.etree.ElementTree as ET
 import re
 import sys
 import xmltodict
@@ -10,15 +9,15 @@ def rename_file(metadata, school_type):
         print("Error: school_type must be 'elementary' or 'secondary'")
         sys.exit(1)
     
-    create_date = metadata['ns1:CreateDate']
-    board_number = metadata['ns1:SchoolBoard']['ns1:BoardNumber']
-    board_name = metadata['ns1:SchoolBoard']['ns1:Name']
+    # create_date = metadata['ns1:CreateDate']
+    # # board_number = metadata['ns1:SchoolBoard']['ns1:BoardNumber']
+    # board_name = metadata['ns1:SchoolBoard']['ns1:Name']
     
     # Remove spaces and special characters from board name
-    board_name_clean = re.sub(r'[^A-Za-z0-9]', '', board_name)
+    # board_name_clean = re.sub(r'[^A-Za-z0-9]', '', board_name)
 
-    # Format date as YYYYMMDD
-    create_date_formatted = re.sub(r'(\d{4})-(\d{2})-(\d{2}).*', r'\1\2\3', create_date)
+    # # Format date as YYYYMMDD
+    # create_date_formatted = re.sub(r'(\d{4})-(\d{2})-(\d{2}).*', r'\1\2\3', create_date)
 
 
 

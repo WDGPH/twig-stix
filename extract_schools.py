@@ -1,5 +1,4 @@
 import xml.etree.ElementTree as ET
-import re
 import sys
 import xmltodict
 import logging
@@ -29,8 +28,6 @@ ns = {"ns1": "http://ontario.ca"}
 logging.info(f"Total number of schools in the file: {len(records)}")
 logging.info(f"Extracting school with number: {school_number}")
 
-
-
 for school in root.findall(".//ns1:School", ns):
     school_record = school.find("ns1:SchoolNumber", ns)
     if school_record is not None and school_record.text == school_number: 
@@ -39,12 +36,12 @@ for school in root.findall(".//ns1:School", ns):
 
 logging.info(f"Total number of schools after removal: {len(root.findall('.//ns1:School', ns))}")
 # Check to make sure the schools were removed
-for school in root.findall(".//ns1:School", ns):
-    school_number = school.find("ns1:SchoolNumber", ns)
-    if school_number is not None and school_number.text in remove_school_numbers:
-        logging.info(f"School with number {school_number.text} was not removed.")
-    else:
-        logging.info(f"School with number {school_number.text} is present.")
+# for school in root.findall(".//ns1:School", ns):
+#     school_number = school.find("ns1:SchoolNumber", ns)
+#     if school_number is not None and school_number.text in remove_school_numbers:
+#         logging.info(f"School with number {school_number.text} was not removed.")
+#     else:
+#         logging.info(f"School with number {school_number.text} is present.")
 
 
 # Write the modified XML back to a file

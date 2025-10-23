@@ -1,9 +1,5 @@
-import xml.etree.ElementTree as ET
-import re
 import pandas as pd
-from lxml import etree
 import xmltodict
-import json
 import sys
 
 path = sys.argv[1]
