@@ -9,6 +9,14 @@ argparser.add_argument('output', type=str, help='Path to the output XML file')
 
 args = argparser.parse_args()
 
+# Validate input file exists and is readable
+try:
+    with open(args.input, 'r', encoding='utf-8') as f:
+        pass
+except Exception as e:
+    print(f"Error reading input file: {e}")
+    sys.exit(1)
+
 with open(args.input, 'r', encoding='utf-8') as file:
     dict_data = xmltodict.parse(file.read())
 
