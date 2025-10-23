@@ -2,6 +2,11 @@ import pandas as pd
 import xmltodict
 import sys
 import argparse 
+import logging
+
+# Set up logging
+logfile = 'pull_info.log'
+logging.basicConfig(level=logging.INFO, filename=logfile, filemode='w',)
 
 argparser = argparse.ArgumentParser(description='Extract student info from school XML.')
 argparser.add_argument('input', type=str, help='Path to the XML file')
@@ -19,7 +24,7 @@ except Exception as e:
 
 with open(args.input, 'r', encoding='utf-8') as file:
     dict_data = xmltodict.parse(file.read())
-
+    logging.info(f"Successfully parsed XML file: {args.input}")
 
 # Get keys at the second level
 records = dict_data['ns1:SchoolUpload']['ns1:School']
@@ -65,38 +70,33 @@ for record in records:
 # Convert to DataFrame
 df_students = pd.DataFrame(student_list)
 
-
-# Get year of birth from birthdate
+# Extract birth year
 df_students['BirthYear'] = pd.to_datetime(df_students['BirthDate']).dt.year
-
-# Group by school and birth year and count students
 school_counts = df_students.groupby(['SchoolName', 'BirthYear']).size().reset_index(name='StudentCount')
-print(school_counts)
-print(df_students['BirthYear'].value_counts())
-
-# Group by school and birth year and count students
 grade_counts = df_students.groupby(['SchoolName', 'Grade']).size().reset_index(name='GradeCount')
-print(grade_counts)
-
 
 # Filter by students born in 2012 and 2013
 df_filtered = df_students[
     (df_students['BirthYear'] == 2012) | (df_students['BirthYear'] == 2013)
 ]
 
-print(f"Total students born in 2012 and 2013: {len(df_filtered)}")
-print(df_filtered['Grade'].value_counts())
-
-# Ensure we only have grade 8 and 7 students 
 df_filtered = df_filtered[
     (df_filtered['Grade'] == 'GR7') | (df_filtered['Grade'] == 'GR8')
 ]
-print(df_filtered)
-print(f"Total students in GR7 and GR8: {len(df_filtered)}")
-print(df_filtered['Grade'].value_counts())
 
-print(df_filtered['SchoolName'])
+logging.info(f"Total schools processed: {school_counts['SchoolName'].nunique()}")
+logging.info(f"Total students extracted: {len(df_students)}")
+logging.info(f"Birth year distribution:\n{df_students['BirthYear'].value_counts()}")
+logging.info(f"Grade distribution:\n{grade_counts}")
+logging.info(f"Total students born in 2012 and 2013: {len(df_filtered)}")
+logging.info(f"Grade distribution for filtered students:\n{df_filtered['Grade'].value_counts()}")
+logging.info(f"Schools with filtered students:\n{df_filtered['SchoolName'].unique()}")
 
-# # Save to CSV
-# outpath = path.replace('.xml', '.csv')
-# df_filtered.to_csv(outpath, index=False, encoding='utf-8-sig')
+# Save to Excel
+outpath = args.output.replace('.xml', '.xlsx')
+with pd.ExcelWriter(outpath, engine='openpyxl') as writer:
+    df_students.to_excel(writer, sheet_name='All_Students', index=False)
+    df_filtered.to_excel(writer, sheet_name='Filtered_Students', index=False)
+    school_counts.to_excel(writer, sheet_name='School_Counts', index=False)
+    grade_counts.to_excel(writer, sheet_name='Grade_Counts', index=False)
+
