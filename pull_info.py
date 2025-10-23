@@ -1,11 +1,15 @@
 import pandas as pd
 import xmltodict
 import sys
+import argparse 
 
-path = sys.argv[1]
+argparser = argparse.ArgumentParser(description='Extract student info from school XML.')
+argparser.add_argument('input', type=str, help='Path to the XML file')
+argparser.add_argument('output', type=str, help='Path to the output XML file')
 
+args = argparser.parse_args()
 
-with open(path, 'r', encoding='utf-8') as file:
+with open(args.input, 'r', encoding='utf-8') as file:
     dict_data = xmltodict.parse(file.read())
 
 
