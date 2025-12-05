@@ -1,2 +1,4 @@
 input/*
 output/*
+twig_stix/__pycache__/
+.github/copilot-instructions.md
