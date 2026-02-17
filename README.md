@@ -53,6 +53,17 @@ To ensure that files can be properly ingested into the pipeline and understood b
 python stix_fix.py
 ```
 
+## Web UI
+
+Run the local Flask UI to clean, review, and export from the browser:
+
+```
+pip install -r requirements.txt
+python app.py
+```
+
+Then open `http://127.0.0.1:5000` in your browser. Job files are stored in `.stix_ui/jobs` inside the repo.
+
 ## Assumptions Using Automated Method 
 
 * All invalid postal codes are discarded - validity of postal codes checked by ensuring that the alphanumeric code follows the correct format

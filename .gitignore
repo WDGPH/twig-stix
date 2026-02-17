@@ -1,2 +1,6 @@
 input/*
 output/*
+.stix_ui/
+__pycache__/
+*.pyc
+*.log

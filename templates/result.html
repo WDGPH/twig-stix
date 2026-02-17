@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero compact-hero">
+  <div>
+    <p class="eyebrow">Workflow result</p>
+    <h1>{{ title }}</h1>
+    {% if message %}
+      <p class="lead">{{ message }}</p>
+    {% endif %}
+    {% if error %}
+      <p class="lead error-text">{{ error }}</p>
+    {% endif %}
+  </div>
+  <div class="hero-card">
+    <div class="hero-metric">
+      <span class="metric-value">{{ downloads | length }}</span>
+      <span class="metric-label">Files ready</span>
+    </div>
+    <div class="hero-metric">
+      <span class="metric-value">{{ job_id or "" }}</span>
+      <span class="metric-label">Job id</span>
+    </div>
+  </div>
+</section>
+
+{% if stats %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>Run stats</h2>
+  </div>
+  <div class="stats-grid">
+    {% for key, value in stats.items() %}
+      <div class="stat-card">
+        <div class="stat-value">{{ value }}</div>
+        <div class="stat-label">{{ key.replace('_', ' ') }}</div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if downloads %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>Downloads</h2>
+    <p class="hint">Click to save files locally.</p>
+  </div>
+  <div class="download-grid">
+    {% for item in downloads %}
+      <a class="download-card" href="{{ item.url }}">
+        <div class="download-title">{{ item.label }}</div>
+        <div class="download-meta">{{ item.file }}</div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<div class="result-actions">
+  <a class="btn ghost" href="{{ url_for('index') }}">Start another run</a>
+</div>
+{% endblock %}

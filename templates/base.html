@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title or "TWIG-STIX UI" }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="{{ url_prefix }}/static/styles.css">
+    <script defer src="{{ url_prefix }}/static/app.js"></script>
+  </head>
+  <body>
+    <div class="ambient"></div>
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">TS</div>
+        <div class="brand-text">
+          <span class="brand-title">TWIG-STIX</span>
+          <span class="brand-sub">STIX XML cleanup studio</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="badge">Local workspace</span>
+      </div>
+    </header>
+    <main class="page">
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="footer">
+      <span>Clean. Review. Export.</span>
+      <span>Files stay in this workspace.</span>
+    </footer>
+  </body>
+</html>

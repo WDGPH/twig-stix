@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero review-hero">
+  <div>
+    <p class="eyebrow">Review queue</p>
+    <h1>Confirm the fields that need human eyes.</h1>
+    <p class="lead">
+      Auto-cleaning already ran. Fill in updates below, or skip to keep the auto-cleaned output.
+    </p>
+  </div>
+  <div class="hero-card">
+    <div class="hero-metric">
+      <span class="metric-value">{{ total_issues }}</span>
+      <span class="metric-label">Items to review</span>
+    </div>
+    <div class="hero-metric">
+      <span class="metric-value">{{ stats.units_review or 0 }}</span>
+      <span class="metric-label">Units flagged</span>
+    </div>
+    <div class="hero-metric">
+      <span class="metric-value">{{ stats.street_review or 0 }}</span>
+      <span class="metric-label">Street numbers flagged</span>
+    </div>
+  </div>
+</section>
+
+<form class="review-form" method="post" action="{{ url_for('review', job_id=job_id) }}">
+  {% if street_issues %}
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Street numbers</h2>
+      <p class="hint">Provide corrections or clear values explicitly.</p>
+    </div>
+    <div class="issue-list">
+      {% for issue in street_issues %}
+      <div class="issue-card">
+        <div class="issue-head">
+          <div>
+            <div class="issue-title">Street number exceeds length</div>
+            <div class="issue-meta">
+              School {{ issue.school_number or "" }} {{ issue.school_name or "" }}
+            </div>
+          </div>
+          <div class="issue-tag">Line {{ issue.line or "?" }}</div>
+        </div>
+        <div class="issue-body">
+          <div class="issue-context">
+            Current number: <strong>{{ issue.current }}</strong>
+            {% if issue.street_name %} on {{ issue.street_name }}{% endif %}
+          </div>
+          <div class="field-grid">
+            <label>
+              New street number
+              <input type="text" name="{{ issue.id }}_number" placeholder="{{ issue.current }}">
+            </label>
+            <label class="checkline">
+              <input type="checkbox" name="{{ issue.id }}_clear_number">
+              Clear street number
+            </label>
+            <label>
+              New street name
+              <input type="text" name="{{ issue.id }}_street_name" placeholder="{{ issue.street_name }}">
+            </label>
+            <label class="checkline">
+              <input type="checkbox" name="{{ issue.id }}_clear_street_name">
+              Clear street name
+            </label>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if unit_issues %}
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Units</h2>
+      <p class="hint">Unrecognized unit values need a manual decision.</p>
+    </div>
+    <div class="issue-list">
+      {% for issue in unit_issues %}
+      <div class="issue-card">
+        <div class="issue-head">
+          <div>
+            <div class="issue-title">Unit value needs review</div>
+            <div class="issue-meta">
+              School {{ issue.school_number or "" }} {{ issue.school_name or "" }}
+            </div>
+          </div>
+          <div class="issue-tag">Line {{ issue.line or "?" }}</div>
+        </div>
+        <div class="issue-body">
+          <div class="issue-context">
+            Current unit: <strong>{{ issue.current }}</strong>
+            {% if issue.street_number or issue.street_name %}
+              <span>at {{ issue.street_number }} {{ issue.street_name }}</span>
+            {% endif %}
+          </div>
+          <div class="field-grid">
+            <label>
+              New unit value
+              <input type="text" name="{{ issue.id }}_unit" placeholder="{{ issue.current }}">
+            </label>
+            <label class="checkline">
+              <input type="checkbox" name="{{ issue.id }}_clear_unit">
+              Clear unit
+            </label>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <div class="review-actions">
+    <button class="btn primary" type="submit">Apply fixes and generate XML</button>
+  </div>
+</form>
+
+<form class="review-skip" method="post" action="{{ url_for('review_skip', job_id=job_id) }}">
+  <button class="btn ghost" type="submit">Finalize without manual edits</button>
+</form>
+{% endblock %}

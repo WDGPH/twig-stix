@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Data cleaning for STIX enrollment XML</p>
+    <h1>Make STIX files clean, consistent, and ready to ship.</h1>
+    <p class="lead">
+      Run a focused workflow, review the tricky fields, and export results in one place.
+      Designed for speed and traceable corrections.
+    </p>
+  </div>
+  <div class="hero-card">
+    <div class="hero-metric">
+      <span class="metric-value">3</span>
+      <span class="metric-label">Workflows</span>
+    </div>
+    <div class="hero-metric">
+      <span class="metric-value">XML</span>
+      <span class="metric-label">In, clean out</span>
+    </div>
+    <div class="hero-metric">
+      <span class="metric-value">CSV</span>
+      <span class="metric-label">Reports ready</span>
+    </div>
+  </div>
+</section>
+
+<form class="workspace" method="post" action="{{ url_for('run') }}" enctype="multipart/form-data">
+  <section class="panel workflow-panel">
+    <h2>Choose a workflow</h2>
+    <div class="workflow-list" role="radiogroup" aria-label="Workflow selection">
+      <label class="workflow-card" data-action-card="clean">
+        <input type="radio" name="action" value="clean" checked>
+        <div class="workflow-title">Clean and review</div>
+        <div class="workflow-desc">
+          Fix phone formats, standardize units, and review long street numbers.
+        </div>
+      </label>
+      <label class="workflow-card" data-action-card="export">
+        <input type="radio" name="action" value="export">
+        <div class="workflow-title">Export reports</div>
+        <div class="workflow-desc">
+          Pull student data and generate CSVs or a single Excel workbook.
+        </div>
+      </label>
+      <label class="workflow-card" data-action-card="pretty">
+        <input type="radio" name="action" value="pretty">
+        <div class="workflow-title">Pretty print XML</div>
+        <div class="workflow-desc">
+          Reformat XML for easier inspection and line-based review.
+        </div>
+      </label>
+    </div>
+  </section>
+
+  <section class="panel form-panel">
+    <h2>Upload your XML</h2>
+    <label class="file-drop" for="xml-file">
+      <input id="xml-file" type="file" name="xml_file" accept=".xml">
+      <span class="file-title">Drop the file here or browse</span>
+      <span class="file-name" id="file-name">No file selected</span>
+      <span class="file-hint">Windows-1252 and UTF-8 supported</span>
+    </label>
+    <label class="text-input" for="server-path">
+      <span>Server file path (optional)</span>
+      <input id="server-path" type="text" name="server_path" placeholder="/home/jovyan/twig-stix/example.xml">
+    </label>
+    <p class="hint">
+      Use a server path to avoid proxy upload limits. If set, the upload field is ignored.
+    </p>
+
+    <div class="options" data-action="clean">
+      <h3>Clean options</h3>
+      <label class="toggle">
+        <input type="checkbox" name="auto_only">
+        <span>Skip manual review and output auto-cleaned XML</span>
+      </label>
+      <p class="hint">
+        If unchecked, you will get a review queue for long street numbers and unrecognized units.
+      </p>
+    </div>
+
+    <div class="options" data-action="export" hidden>
+      <h3>Export options</h3>
+      <label class="select">
+        <span>Format</span>
+        <select name="export_format">
+          <option value="csv">CSV bundle</option>
+          <option value="excel">Excel workbook</option>
+        </select>
+      </label>
+      <p class="hint">Exports include summaries for school counts and grade counts.</p>
+    </div>
+
+    <div class="options" data-action="pretty" hidden>
+      <h3>Pretty print</h3>
+      <p class="hint">Outputs a reformatted XML file with consistent indentation.</p>
+    </div>
+
+    <button class="btn primary" type="submit">Run workflow</button>
+    <p class="micro">Outputs are saved to a local job folder so you can download them immediately.</p>
+  </section>
+</form>
+{% endblock %}

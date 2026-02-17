@@ -12,15 +12,23 @@ import xmltodict
 DEFAULT_LOGFILE = "pull_info.log"
 logger = logging.getLogger("pull_info")
 logger.setLevel(logging.INFO)
-fmt = logging.Formatter("%(levelname)s: %(message)s")
+logger.addHandler(logging.NullHandler())
 
-fh = logging.FileHandler(DEFAULT_LOGFILE, mode="w", encoding="windows-1252")
-fh.setFormatter(fmt)
-logger.addHandler(fh)
 
-sh = logging.StreamHandler()
-sh.setFormatter(fmt)
-logger.addHandler(sh)
+def setup_logging(logfile: Path = Path(DEFAULT_LOGFILE), console: bool = True) -> None:
+    logger.handlers.clear()
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    fmt = logging.Formatter("%(levelname)s: %(message)s")
+    fh = logging.FileHandler(str(logfile), mode="w", encoding="windows-1252")
+    fh.setFormatter(fmt)
+    logger.addHandler(fh)
+
+    if console:
+        sh = logging.StreamHandler()
+        sh.setFormatter(fmt)
+        logger.addHandler(sh)
 
 
 def _ensure_list(x: Optional[Any]) -> List[Any]:
@@ -161,6 +169,7 @@ def export_outputs(
 
 
 def main() -> int:
+    setup_logging(Path(DEFAULT_LOGFILE), console=True)
     p = argparse.ArgumentParser(description="Extract student info from school XML.")
     p.add_argument("input", type=Path, help="Path to the XML file")
     p.add_argument("--output", "-o", type=Path, help="Output path (file). If --excel passed produces .xlsx")
@@ -195,4 +204,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
